@@ -1,0 +1,6 @@
+{
+	"LogicAppSecretUri": {
+		"type": "string",
+		"value": "https://mentoring-key-vault-mk.vault.azure.net/secrets/logicAppPostUrl/?api-version=7.0"
+	}
+}

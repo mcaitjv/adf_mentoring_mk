@@ -1,0 +1,60 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "mentoring-adf-mk"
+		},
+		"movies_database_password": {
+			"value": ""
+		},
+		"AzureBlobStorage1_properties_typeProperties_sasUri_secretName": {
+			"value": "BlobSASURL1"
+		},
+		"AzureBlobStorage2_properties_typeProperties_sasUri_secretName": {
+			"value": "BlobSasUrl3"
+		},
+		"AzureBlobStorage3_properties_typeProperties_sasUri_secretName": {
+			"value": "blobContainerOnlineS"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://azurementoringdatalakemk.dfs.core.windows.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://mentoring-key-vault-mk.vault.azure.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
+			"value": "sqlDBConnStr2"
+		},
+		"LS_SourceOnlineCont_properties_typeProperties_sasUri_secretName": {
+			"value": "blobContainerOnlineS"
+		},
+		"ls_datamart2_properties_typeProperties_connectionString_secretName": {
+			"value": "dmConnString"
+		},
+		"movies_database_properties_typeProperties_server": {
+			"value": "azure-mentoring-mk.database.windows.net"
+		},
+		"movies_database_properties_typeProperties_database": {
+			"value": "movies"
+		},
+		"movies_database_properties_typeProperties_userName": {
+			"value": "EPTRANKW012A"
+		},
+		"onprem_sql_server_properties_typeProperties_connectionString_secretName": {
+			"value": "sqlConnString"
+		},
+		"Trigger_93r_properties_CopyFromBlobPipeline_parameters_windowStart": {
+			"value": "@{addhours(trigger().scheduledTime, -24)}"
+		},
+		"Trigger_93r_properties_CopyFromBlobPipeline_parameters_windowEnd": {
+			"value": "@trigger().scheduledTime"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
