@@ -1,0 +1,17 @@
+{
+	"name": "AzureSqlDatabase2",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "azure-mentoring-mk.database.windows.net",
+			"database": "movies",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "EPTRANKW012A",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDAxOTQ5RDg3LTE3RDUtNDRBMi1BRTZFLUUyMTkxRTUwRDA3MF8xZjc0N2YwMS1hZThmLTQ1MDgtYjU0Yy03OTEyMmMxNTY5ODciDQp9"
+		}
+	}
+}
