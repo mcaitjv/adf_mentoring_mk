@@ -1,0 +1,171 @@
+{
+	"name": "metadata_driven",
+	"properties": {
+		"activities": [
+			{
+				"name": "LKP_GetFiles",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "etlControlMetadata",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "LKP_GetFiles",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('LKP_GetFiles').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@item().SourceFolder",
+											"type": "Expression"
+										},
+										"wildcardFileName": {
+											"value": "@item().SourceFileName",
+											"type": "Expression"
+										},
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"preCopyScript": {
+										"value": "@concat('TRUNCATE TABLE ', item().DestSchema, '.', item().DestTable)",
+										"type": "Expression"
+									},
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"enableSkipIncompatibleRow": true,
+								"logSettings": {
+									"enableCopyActivityLog": true,
+									"copyActivityLogSettings": {
+										"logLevel": "Warning",
+										"enableReliableLogging": false
+									},
+									"logLocationSettings": {
+										"linkedServiceName": {
+											"referenceName": "AzureDataLakeStorage1",
+											"type": "LinkedServiceReference"
+										}
+									}
+								},
+								"dataIntegrationUnits": {
+									"value": "@item().DIUValue",
+									"type": "Expression"
+								},
+								"translator": {
+									"value": "@json(coalesce(item().MappingJSON, '{}'))",
+									"type": "Expression"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "metadataDrivenSource",
+									"type": "DatasetReference",
+									"parameters": {
+										"pContainer": {
+											"value": "@item().SourceContainer",
+											"type": "Expression"
+										},
+										"pFolder": {
+											"value": "@item().SourceFolder",
+											"type": "Expression"
+										},
+										"pFile": {
+											"value": "@item().SourceFileName",
+											"type": "Expression"
+										},
+										"pDelimiter": {
+											"value": "@item().Delimiter",
+											"type": "Expression"
+										},
+										"pQuote": {
+											"value": "@coalesce(item().QuoteChar, '\"')",
+											"type": "Expression"
+										},
+										"pEscape": {
+											"value": "@item().EscapeChar",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "metadataDrivenDest",
+									"type": "DatasetReference",
+									"parameters": {
+										"pSchema": {
+											"value": "@item().DestSchema",
+											"type": "Expression"
+										},
+										"pTable": {
+											"value": "@item().DestTable",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-02-23T08:44:20Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,68 @@
+{
+	"name": "etlControlMetadata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_datamart2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SourceContainer",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SourceFolder",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SourceFileName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Delimiter",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Encoding",
+				"type": "nvarchar"
+			},
+			{
+				"name": "QuoteChar",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EscapeChar",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DestSchema",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DestTable",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DIUValue",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MappingJSON",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "etl",
+			"table": "tControlMetadata"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

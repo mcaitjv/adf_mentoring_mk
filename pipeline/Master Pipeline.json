@@ -1,0 +1,72 @@
+{
+	"name": "Master Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "pl_1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "mentoring_pipeline",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pl2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pl_1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_module5",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "pl3",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "pl2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_archive_processed_files_mdl5",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-12-14T07:32:50Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

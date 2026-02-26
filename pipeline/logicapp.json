@@ -1,0 +1,81 @@
+{
+	"name": "logicapp",
+	"properties": {
+		"activities": [
+			{
+				"name": "Web_GetSecret",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "@string(pipeline().globalParameters.LogicAppSecretUri)",
+						"type": "Expression"
+					},
+					"body": {
+						"message": "This is a custom dynamic message from your pipeline with run ID @{pipeline().RunId}.",
+						"dataFactoryName": "@{pipeline().DataFactory}",
+						"pipelineName": "@{pipeline().Pipeline}",
+						"receiver": "@{pipeline().parameters.receiver}"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Web2",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Web_GetSecret",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": {
+						"value": "@activity('Web_GetSecret').output.value",
+						"type": "Expression"
+					},
+					"body": {
+						"pipelineName": "@{pipeline().Pipeline}",
+						"status": "Running",
+						"dataFactoryName": "@{pipeline().DataFactory}",
+						"runId": "@{pipeline().RunId}",
+						"errorMessage": "Manual Trigger or Orchestration Step",
+						"recipientEmail": "mucahit_katirci@epam.com"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"receiver": {
+				"type": "string",
+				"defaultValue": "mucahit_katirci@epam.com"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-02-25T07:58:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

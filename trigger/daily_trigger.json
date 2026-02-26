@@ -1,0 +1,25 @@
+{
+	"name": "daily_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "incremental_load",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2025-12-18T09:51:00",
+				"endTime": "2025-12-18T12:49:00",
+				"timeZone": "Turkey Standard Time"
+			}
+		}
+	}
+}
