@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "mentoring-adf-mk"
 		},
+		"AzureSqlDatabase2_password": {
+			"value": ""
+		},
 		"movies_database_password": {
 			"value": ""
 		},
@@ -25,6 +28,15 @@
 		},
 		"AzureSqlDatabase1_properties_typeProperties_connectionString_secretName": {
 			"value": "sqlDBConnStr2"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_server": {
+			"value": "azure-mentoring-mk.database.windows.net"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_database": {
+			"value": "movies"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_userName": {
+			"value": "EPTRANKW012A"
 		},
 		"LS_SourceOnlineCont_properties_typeProperties_sasUri_secretName": {
 			"value": "blobContainerOnlineS"

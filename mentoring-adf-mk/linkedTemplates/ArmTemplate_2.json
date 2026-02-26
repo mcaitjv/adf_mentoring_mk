@@ -13,6 +13,51 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_FactOnlinePurchase')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_datamart2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "DateKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OnlineServiceKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MovieKey",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Price",
+						"type": "decimal",
+						"precision": 4,
+						"scale": 1
+					},
+					{
+						"name": "TransactionId",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "FactOnlinePurchase"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_FactOnlinePurchase_Monthly')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3022,172 +3067,6 @@
 				"[concat(variables('factoryId'), '/datasets/stg_credits')]",
 				"[concat(variables('factoryId'), '/datasets/stg_moviesmetadata')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DF_Load_Dimensions')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "DatasetOnlineService",
-								"type": "DatasetReference"
-							},
-							"name": "SourceOnlineService"
-						},
-						{
-							"dataset": {
-								"referenceName": "DatasetMovies",
-								"type": "DatasetReference"
-							},
-							"name": "SourceMovies"
-						},
-						{
-							"dataset": {
-								"referenceName": "DatasetMoviesStatus",
-								"type": "DatasetReference"
-							},
-							"name": "SourceMovieStatus"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "SinkDatasetOnlineService",
-								"type": "DatasetReference"
-							},
-							"name": "SinkDimOnlineService"
-						},
-						{
-							"dataset": {
-								"referenceName": "SinkDimMovie",
-								"type": "DatasetReference"
-							},
-							"name": "SinkDimMovie"
-						}
-					],
-					"transformations": [
-						{
-							"name": "AddAuditColumns"
-						},
-						{
-							"name": "join1"
-						},
-						{
-							"name": "AddDates"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          ServiceKey as integer,",
-						"          ServiceCode as string,",
-						"          ServiceName as string,",
-						"          CreatedDate as timestamp,",
-						"          ModifiedDate as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> SourceOnlineService",
-						"source(output(",
-						"          MovieId as integer,",
-						"          MovieIdNK as integer,",
-						"          Budget as integer,",
-						"          HomepagePath as string,",
-						"          Title as string,",
-						"          OriginalTitle as string,",
-						"          ReleaseDate as date,",
-						"          Revenue as long,",
-						"          Runtime as integer,",
-						"          MovieStatusId as integer,",
-						"          AvgVote as decimal(3,1),",
-						"          CreatedDate as timestamp,",
-						"          ModifiedDate as timestamp,",
-						"          SrcFileName as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> SourceMovies",
-						"source(output(",
-						"          MovieStatusId as integer,",
-						"          MovieStatusName as string,",
-						"          CreatedDate as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> SourceMovieStatus",
-						"SourceOnlineService derive(CreatedDate = currentTimestamp(),",
-						"          ModifiedDate = currentTimestamp()) ~> AddAuditColumns",
-						"SourceMovies, SourceMovieStatus join(SourceMovies@MovieStatusId == SourceMovieStatus@MovieStatusId,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> join1",
-						"join1 derive(CreatedDate = currentTimestamp(),",
-						"          ModifiedDate = currentTimestamp()) ~> AddDates",
-						"AddAuditColumns sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          ServiceKey as integer,",
-						"          ServiceCode as string,",
-						"          ServiceName as string,",
-						"          CreatedDate as timestamp,",
-						"          ModifiedDate as timestamp",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     truncate:true,",
-						"     format: 'table',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          ServiceCode,",
-						"          ServiceName,",
-						"          CreatedDate,",
-						"          ModifiedDate",
-						"     )) ~> SinkDimOnlineService",
-						"AddDates sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          MovieKey as integer,",
-						"          MovieIdNK as integer,",
-						"          Title as string,",
-						"          ReleaseDate as date,",
-						"          Runtime as integer,",
-						"          MovieStatus as string,",
-						"          CreatedDate as timestamp,",
-						"          ModifiedDate as timestamp",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     truncate:true,",
-						"     format: 'table',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          MovieIdNK,",
-						"          Title,",
-						"          ReleaseDate,",
-						"          Runtime,",
-						"          MovieStatus = SourceMovieStatus@MovieStatusId,",
-						"          CreatedDate,",
-						"          ModifiedDate",
-						"     )) ~> SinkDimMovie"
-					]
-				}
-			},
-			"dependsOn": []
 		}
 	]
 }
